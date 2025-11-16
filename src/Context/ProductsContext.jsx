@@ -1,27 +1,33 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import api from "../Services/confing";
 
 const ProductsContext = createContext();
 
 function ProductsProvider({ children }) {
   const [products, setProducts] = useState([]);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await api.get("/products");
-        setProducts(response);
+        setProducts(response);   
       } catch (error) {
         console.log(error.message);
       }
     };
     fetchProducts();
   }, []);
+
   return (
-    <div>
-      {" "}
-      <ProductsProvider.Provider>{children}</ProductsProvider.Provider>
-    </div>
+    <ProductsContext.Provider value={products}>
+      {children}
+    </ProductsContext.Provider>
   );
 }
 
+const useProducts = () => {
+  return useContext(ProductsContext);
+};
+
 export default ProductsProvider;
+export { useProducts };
