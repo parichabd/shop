@@ -1,35 +1,40 @@
 import { useEffect, useState } from "react";
 import { useProducts } from "../Context/ProductsContext";
 import { ImSearch } from "react-icons/im";
+import { useParams, useSearchParams } from "react-router-dom";
 import Card from "../Components/Card";
 import Loader from "../Components/Loader";
 
 import styles from "./ProductsPage.module.css";
 import { FaListUl } from "react-icons/fa";
+import { createQueryObject, filterCategories, searchProducts } from "../Helper/helper";
 
 function ProducsPage() {
-  const products = useProducts();
+const products = useProducts();
 
 
   const [search, setSearch] = useState("");
   const [displayed, setDisplayed] = useState([]);
   const [query,setQuery] = useState({})
-
+  const [searchParams,setSearchParams] = useSearchParams()
   useEffect(()=>{
     setDisplayed(products)
   },[products])
 
   useEffect(()=>{
-    console.log(query);
+    setSearchParams(query)
+    let finalProducts = searchProducts(products,query.search)
+    finalProducts = filterCategories(finalProducts , query.category)
+    setDisplayed(finalProducts)
   },[query])
   const searchHandler = () => {
-    setQuery(query=>({...query, search}))
+    setQuery(query=>(createQueryObject(query,{search})))
   }
   const sideHadler = (e) =>{
     const {tagName} = e.target
     const category = e.target.innerText.toLowerCase()
     if (tagName !== "LI") return
-    setQuery((query)=>({...query,category}))
+    setQuery((query)=>(createQueryObject(query,{category})))
   }
   return (
     <>
