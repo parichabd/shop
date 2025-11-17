@@ -41,8 +41,8 @@ function ProducsPage() {
       </div>
       <div className={styles.container}>
         <div className={styles.products}>
-          {!products.length && <Loader />}
-          {products.map((p) => (
+          {!displayed.length && <Loader />}
+          {displayed.map((p) => (
             <Card key={p.id} data={p} />
           ))}
         </div>
