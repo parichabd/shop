@@ -5,6 +5,7 @@ import Card from "../Components/Card";
 import Loader from "../Components/Loader";
 
 import styles from "./ProductsPage.module.css";
+import { FaListUl } from "react-icons/fa";
 
 function ProducsPage() {
   const [search, setSearch] = useState("");
@@ -12,6 +13,12 @@ function ProducsPage() {
 
   const searchHandler = () => {
     console.log("search!");
+  }
+  const sideHadler = (e) =>{
+    const {tagName} = e.target
+    const category = e.target.innerText.toLowerCase()
+    if (tagName !== "LI") return
+    console.log(category);
   }
   return (
     <>
@@ -33,7 +40,19 @@ function ProducsPage() {
             <Card key={p.id} data={p} />
           ))}
         </div>
-        <div>sidebar</div>
+        <div>
+          <div>
+            <FaListUl/>
+            <p>Categories</p>
+          </div>
+          <ul onClick={sideHadler}>
+            <li>All</li>
+            <li>Electronics</li>
+            <li>Jewelery</li>
+            <li>Men's Clothing</li>
+            <li>Women's Clothing</li>
+          </ul>
+        </div>
       </div>
     </>
   );
