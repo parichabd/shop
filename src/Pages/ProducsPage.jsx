@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useProducts } from "../Context/ProductsContext";
 import { ImSearch } from "react-icons/im";
 import Card from "../Components/Card";
@@ -8,9 +8,15 @@ import styles from "./ProductsPage.module.css";
 import { FaListUl } from "react-icons/fa";
 
 function ProducsPage() {
-  const [search, setSearch] = useState("");
   const products = useProducts();
 
+
+  const [search, setSearch] = useState("");
+  const [displayed, setDisplayed] = useState([]);
+
+  useEffect(()=>{
+    setDisplayed(products)
+  },[products])
   const searchHandler = () => {
     console.log("search!");
   }
