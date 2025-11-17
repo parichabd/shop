@@ -1,41 +1,55 @@
 import { useEffect, useState } from "react";
 import { useProducts } from "../Context/ProductsContext";
 import { ImSearch } from "react-icons/im";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import Card from "../Components/Card";
 import Loader from "../Components/Loader";
-
 import styles from "./ProductsPage.module.css";
 import { FaListUl } from "react-icons/fa";
-import { createQueryObject, filterCategories, searchProducts } from "../Helper/helper";
+import {
+  createQueryObject,
+  filterCategories,
+  getInitialQuery,
+  searchProducts,
+  mapToApiCategory
+} from "../Helper/helper";
 
 function ProducsPage() {
-const products = useProducts();
-
+  const products = useProducts();
 
   const [search, setSearch] = useState("");
   const [displayed, setDisplayed] = useState([]);
-  const [query,setQuery] = useState({})
-  const [searchParams,setSearchParams] = useSearchParams()
-  useEffect(()=>{
-    setDisplayed(products)
-  },[products])
+  const [query, setQuery] = useState({});
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  useEffect(()=>{
-    setSearchParams(query)
-    let finalProducts = searchProducts(products,query.search)
-    finalProducts = filterCategories(finalProducts , query.category)
-    setDisplayed(finalProducts)
-  },[query])
+  useEffect(() => {
+    setDisplayed(products);
+    setQuery(getInitialQuery(searchParams));
+  }, [products]);
+
+  useEffect(() => {
+    setSearchParams(query);
+    setSearch(query.search || "");
+
+    let finalProducts = searchProducts(products, query.search);
+    finalProducts = filterCategories(finalProducts, query.category);
+
+    setDisplayed(finalProducts);
+  }, [query]);
+
   const searchHandler = () => {
-    setQuery(query=>(createQueryObject(query,{search})))
-  }
-  const sideHadler = (e) =>{
-    const {tagName} = e.target
-    const category = e.target.innerText.toLowerCase()
-    if (tagName !== "LI") return
-    setQuery((query)=>(createQueryObject(query,{category})))
-  }
+    setQuery((prev) => createQueryObject(prev, { search }));
+  };
+
+  const sideHadler = (e) => {
+    if (e.target.tagName !== "LI") return;
+
+    const uiCategory = e.target.innerText;
+    const category = mapToApiCategory(uiCategory);
+
+    setQuery((prev) => createQueryObject(prev, { category }));
+  };
+
   return (
     <>
       <div>
@@ -45,10 +59,11 @@ const products = useProducts();
           value={search}
           onChange={(e) => setSearch(e.target.value.toLowerCase().trim())}
         />
-       <button onClick={searchHandler}>
-         <ImSearch />
-       </button>
+        <button onClick={searchHandler}>
+          <ImSearch />
+        </button>
       </div>
+
       <div className={styles.container}>
         <div className={styles.products}>
           {!displayed.length && <Loader />}
@@ -56,11 +71,13 @@ const products = useProducts();
             <Card key={p.id} data={p} />
           ))}
         </div>
+
         <div>
           <div>
-            <FaListUl/>
+            <FaListUl />
             <p>Categories</p>
           </div>
+
           <ul onClick={sideHadler}>
             <li>All</li>
             <li>Electronics</li>
