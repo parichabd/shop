@@ -10,7 +10,7 @@ function Card({ data }) {
   const [state, dispatch] = useCart();
   console.log(state);
   const clickHandlere = () => {
-    dispatch({ type: "ADD_ITEM", payload: data });
+    dispatch({ type: "REMOVE_ITEM", payload: data });
   };
   return (
     <div className={styles.card}>
