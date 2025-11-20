@@ -4,8 +4,13 @@ import { Link } from "react-router-dom";
 import { shortText } from "../Helper/helper";
 
 import styles from "./Card.module.css";
+import { useCart } from "../Context/CartContext";
 function Card({ data }) {
   const { id, title, image, price } = data;
+  const [state, dispatch] = useCart();
+  const clickHandlere = () => {
+    dispatch({ type: "add", payload: data });
+  };
   return (
     <div className={styles.card}>
       <img src={image} alt="#" />
@@ -16,7 +21,7 @@ function Card({ data }) {
           <TbListDetails />
         </Link>
         <div>
-          <button>
+          <button onClick={clickHandlere}>
             <TbShoppingBag />
           </button>
         </div>
@@ -26,4 +31,3 @@ function Card({ data }) {
 }
 
 export default Card;
-
