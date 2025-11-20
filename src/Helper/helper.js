@@ -4,9 +4,7 @@ const shortText = (text) => {
 
 const searchProducts = (products, search) => {
   if (!search) return products;
-  return products.filter((p) =>
-    p.title.toLowerCase().includes(search)
-  );
+  return products.filter((p) => p.title.toLowerCase().includes(search));
 };
 
 const filterCategories = (products, category) => {
@@ -51,11 +49,21 @@ const mapToApiCategory = (uiCategory) => {
   return map[uiCategory] || null;
 };
 
+const sumProducts = (products) => {
+  const itemsCounter = products.reduce((acc, cur) => acc + cur.quantity, 0);
+  const total = products.reduce(
+    (acc, cur) => acc + cur.price * cur.quantity,
+    0
+  ).toFixed(2);
+  return {itemsCounter , total}
+};
+
 export {
   shortText,
   searchProducts,
   filterCategories,
   createQueryObject,
   getInitialQuery,
-  mapToApiCategory
+  mapToApiCategory,
+  sumProducts,
 };
